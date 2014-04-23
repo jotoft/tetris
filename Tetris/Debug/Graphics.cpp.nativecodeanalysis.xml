@@ -1,0 +1,2 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<DEFECTS><DEFECT><SFA><FILEPATH>c:\users\johan\dropbox\spelprogrammering\tetris\tetris\</FILEPATH><FILENAME>graphics.cpp</FILENAME><LINE>111</LINE><COLUMN>22</COLUMN></SFA><DEFECTCODE>6262</DEFECTCODE><DESCRIPTION>Function uses '36036' bytes of stack:  exceeds /analyze:stacksize '16384'.  Consider moving some data to heap.</DESCRIPTION><FUNCTION>Graphics::prepare</FUNCTION><DECORATED>?prepare@Graphics@@QAEXM@Z</DECORATED><FUNCLINE>111</FUNCLINE><PATH/></DEFECT></DEFECTS>
