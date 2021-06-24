@@ -9,8 +9,19 @@
 
 
 
+void show_console() {
+  AllocConsole();
+  freopen("conin$", "r", stdin);
+  freopen("conout$", "w", stdout);
+  freopen("conout$", "w", stderr);
+}
+
+#include <iostream>
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
+  show_console();
+
 	GLWindow glWindow(hInstance);
 
 	glWindow.create(800,600,32, false, true);
@@ -22,6 +33,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	while(glWindow.running())
 	{
+	    //std::cout << "Running!\n";
 		glWindow.processEvents();
 		float dt = glWindow.getElapsedTime();
 		game.update(dt);

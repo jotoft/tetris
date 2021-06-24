@@ -1,14 +1,27 @@
 #include "Graphics.h"
 #include <GL/glew.h>
-#include <string>
+#include <cstring>
 #include <sstream>
 #include <fstream>
 #include "Game.h"
 
 #include <math.h>
+#include <iostream>
 
 static const int XSIZE = 800;
 static const int YSIZE = 600;
+
+
+namespace {
+  void check_opengl_errors(const char* msg)
+  {
+    GLenum err;
+    while((err = glGetError()) != GL_NO_ERROR)
+    {
+      std::cout << msg << " 0x" << std::hex << err << '\n';
+    }
+  }
+}
 
 
 Graphics::Graphics(Game *game)
@@ -22,13 +35,16 @@ bool Graphics::init()
 {
 	time = 0.0f;
     glClearColor(0.5f, 0.8f, 0.5f, 0.5f);
+    check_opengl_errors("Init");
 
 	//glViewport(0, 0, XSIZE, YSIZE);
 	glGenVertexArrays(3, vao );
 	glBindVertexArray( vao[0] );
+    check_opengl_errors("BindVertexArray");
 
 	vertexShader = loadShader("vertex.glsl", GL_VERTEX_SHADER );
 	fragmentShader = loadShader("frag.glsl", GL_FRAGMENT_SHADER );
+    check_opengl_errors("BindVertexArray");
 	
 
 	GLenum test = glGetError();
@@ -183,7 +199,11 @@ void Graphics::prepare(float dt)
 	glBindBuffer(GL_ARRAY_BUFFER, vbo[2]);
 	bufsize[2] = sizeof(float)*(strlen(strscore)+6+5+strlen(strlevel))*QUADSIZE;
 	glBufferData(GL_ARRAY_BUFFER, bufsize[2], text, GL_DYNAMIC_DRAW);
-	
+
+
+
+
+
 
 	delete[] vertices;
 
@@ -199,7 +219,7 @@ void Graphics::render()
 	glUniform1i( glGetUniformLocation( shaderProgram, "tex" ), 0 );
 	glDrawArrays(GL_TRIANGLES, 0, bufsize[0]);
 
-	//Rita ut nuvuarande bit och nästa bit
+	//Rita ut nuvuarande bit och nï¿½sta bit
 	glBindVertexArray(vao[1]);
 	glUniform1i( glGetUniformLocation( shaderProgram, "tex" ), 0 );
 	glDrawArrays(GL_TRIANGLES, 0, bufsize[1]);
@@ -260,7 +280,7 @@ void Graphics::calcQuad(float x, float y, int type, float *v)
 
 
 
-	//Offset i x och yled för att flytta alla punkter i x- och y-led
+	//Offset i x och yled fï¿½r att flytta alla punkter i x- och y-led
 	const float tX = -0.5f;
 	const float tY = -1.0f;
 

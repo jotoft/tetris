@@ -36,7 +36,7 @@ int Input::keyDown(KEYS key)
 		game->movePiece(RIGHT);
 		break;
 	case KEY_DOWN:
-		//TODO: continous down movement when key down held
+		//TODO: continuous down movement when key down held
 		game->movePiece(DOWN);
 		break;
 	case KEY_UP:

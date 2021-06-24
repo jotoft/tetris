@@ -3,6 +3,25 @@
 #include <GL/wglew.h>
 #include <iostream>
 #include "Input.h"
+#include <WinUser.h>
+
+
+void GLAPIENTRY
+MessageCallback( GLenum source,
+                 GLenum type,
+                 GLuint id,
+                 GLenum severity,
+                 GLsizei length,
+                 const GLchar* message,
+                 const void* userParam )
+{
+  char msgbuf[250];
+  sprintf( msgbuf, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
+           ( type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : "" ),
+           type, severity, message );
+  std::cout << msgbuf << std::endl;
+
+}
 
 GLWindow::GLWindow(HINSTANCE hInstance)
 {
@@ -70,11 +89,11 @@ LRESULT CALLBACK GLWindow::StaticWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LP
 	{
 		window = (GLWindow*) ((LPCREATESTRUCT)lParam)->lpCreateParams;
 
-		//Lagra pekare till glwindowklassen i fönstrets userdata
-		SetWindowLongPtr(hWnd, GWL_USERDATA, (LONG_PTR)window);
+		//Lagra pekare till glwindowklassen i fonstrets userdata
+		SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR)window);
 	}
 
-	window = (GLWindow*)GetWindowLongPtr(hWnd, GWL_USERDATA);
+	window = (GLWindow*)GetWindowLongPtr(hWnd, GWLP_USERDATA);
 	if(!window)
 		return DefWindowProc(hWnd, uMsg, wParam, lParam);
 
@@ -121,16 +140,19 @@ LRESULT GLWindow::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		setupPixelFormat();
 
 		int attribs[] = {
-			WGL_CONTEXT_MAJOR_VERSION_ARB, 3,
-			WGL_CONTEXT_MINOR_VERSION_ARB, 2, 0 };
+			WGL_CONTEXT_MAJOR_VERSION_ARB, 4,
+			WGL_CONTEXT_MINOR_VERSION_ARB, 3, 0 };
 
 		//Skapa opengl context
 		HGLRC tmpContext = wglCreateContext(hdc);
 		wglMakeCurrent(hdc, tmpContext);
 
-		//Initiera glew, måste ha ett opengl context för att kunna göra det!
+		//Initiera glew, mï¿½ste ha ett opengl context fï¿½r att kunna gï¿½ra det!
 		glewExperimental = GL_TRUE;
 		glewInit();
+        // During init, enable debug output
+        glEnable              ( GL_DEBUG_OUTPUT );
+        glDebugMessageCallback( MessageCallback, 0 );
 
 		//wglCreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC) wglGetProcAddress
 
