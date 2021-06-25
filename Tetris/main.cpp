@@ -6,9 +6,6 @@
 #include "Game.h"
 #include <windows.h>
 
-
-
-
 void show_console() {
   AllocConsole();
   freopen("conin$", "r", stdin);
@@ -18,37 +15,35 @@ void show_console() {
 
 #include <iostream>
 
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
-{
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd) {
   show_console();
 
-	GLWindow glWindow(hInstance);
+  GLWindow glWindow(hInstance);
 
-	glWindow.create(800,600,32, false, true);
-	Game game;
-	Graphics graphics(&game);
-	Input input(&game);
-	glWindow.setInput(&input);
-	graphics.init();
+  glWindow.create(800, 600, 32, false, true);
+  {
+    Game game;
+    Graphics graphics(&game);
+    Input input(&game);
+    glWindow.setInput(&input);
+    graphics.init();
 
-	while(glWindow.running())
-	{
-	    //std::cout << "Running!\n";
-		glWindow.processEvents();
-		float dt = glWindow.getElapsedTime();
-		game.update(dt);
+    while (glWindow.running()) {
+      glWindow.processEvents();
+      float dt = glWindow.getElapsedTime();
+      game.update(dt);
 
-		graphics.prepare(dt);
-		graphics.render();
-		glWindow.swapBuffers();
+      graphics.prepare(dt);
+      graphics.render();
+      glWindow.swapBuffers();
 
-		if(game.isGameOver())
-		{
-			MessageBox(NULL, "GAME OVER", "GAME OVER", MB_OK);
-			break;
-		}
+      if (game.isGameOver()) {
+        MessageBox(NULL, "GAME OVER", "GAME OVER", MB_OK);
+        break;
+      }
 
-	}
-	graphics.shutdown();
-	return 0;
+    }
+    graphics.shutdown();
+  }
+  return 0;
 }
