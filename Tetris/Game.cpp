@@ -1,7 +1,6 @@
 #include "Game.h"
 #include <cstdlib>
 #include <ctime>
-#include "pieces.h"
 
 const int TICKS_PER_SECOND = 120;
 const int LEVEL_MAX = 33;
@@ -20,12 +19,12 @@ Game::Game(void)
 	elapsedTime = 0.0f;
 	prevTick = 0.0f;
 	
-	//nollställ spelplanen
+	//nollstï¿½ll spelplanen
 	for(int i = 0; i < 20; i++)
 		for(int j = 0; j < 10; j++)
-			board[i][j] = 0;
+          m_board[i][j] = 0;
 
-	//flytta detta kanske ... ställ in seed för pseudo-randomgenerator
+	//flytta detta kanske ... stï¿½ll in seed fï¿½r pseudo-randomgenerator
 	std::srand(std::time(0));
 	piece = getPiece(std::rand() % numPieces);
 	for(int i = 0; i < 2; i++)
@@ -65,10 +64,10 @@ bool Game::movePiece(DIRECTION dir)
 
 bool Game::isPositionPossible(int x, int y)
 {
-	//kolla för varje delbit
+	//kolla fï¿½r varje delbit
 	for(int i = 0; i < 4; i++)
 	{
-		//gör om från mönsterkoordinater till världskoordinater
+		//gï¿½r om frï¿½n mï¿½nsterkoordinater till vï¿½rldskoordinater
 		int xworld = piece->pattern[i][0]+x;
 		int yworld = piece->pattern[i][1]+y;
 		if(xworld < 0 || xworld > 9)
@@ -76,7 +75,7 @@ bool Game::isPositionPossible(int x, int y)
 		if(yworld < 0 || yworld > 19)
 			return false;
 
-		if(board[yworld][xworld] != 0)
+		if(m_board[yworld][xworld] != 0)
 			return false;
 	}
 	return true;
@@ -108,7 +107,7 @@ void Game::tick(void)
 	if(gameOver)
 		return;
 
-	//delay används för animationsfördröjning
+	//delay anvï¿½nds fï¿½r animationsfï¿½rdrï¿½jning
 	if(!delay)
 		curTick++;
 	else
@@ -117,7 +116,7 @@ void Game::tick(void)
 		{
 			for(int row = 19; row >= 0; row--)
 			{
-				if(board[row][0] == 10)
+				if(m_board[row][0] == 10)
 					eliminateRow(row);
 			}
 		}
@@ -146,11 +145,11 @@ void Game::putDownPiece()
 		int xworld = piece->pattern[i][0]+px;
 		int yworld = piece->pattern[i][1]+py;
 
-		board[yworld][xworld] = piece->id;
+      m_board[yworld][xworld] = piece->id;
 	}
 	int elrows = checkRows();
 
-	// sätt igång delay för att blinka raderna som eliminerades
+	// sï¿½tt igï¿½ng delay fï¿½r att blinka raderna som eliminerades
 	if(elrows)
 		delay = 60;
 
@@ -175,7 +174,7 @@ void Game::putDownPiece()
 	}
 }
 
-//returnerar ett värde mellan 0 och 1 som indikerar hur långt kvar biten har kommit innan den tickar ner
+//returnerar ett vï¿½rde mellan 0 och 1 som indikerar hur lï¿½ngt kvar biten har kommit innan den tickar ner
 float Game::getPieceProgress()
 {
 	const int ticksPerDrop = (102-level*3);
@@ -202,7 +201,7 @@ void Game::copyBoard(int copy[][10])
 	for(int i = 0; i < 20; i++)
 	{
 		for(int j = 0; j < 10; j++)
-			copy[i][j] = board[i][j];
+			copy[i][j] = m_board[i][j];
 	}
 }
 
@@ -246,7 +245,7 @@ int Game::checkRows()
 		bool fullRow = true;
 		for(int col = 0; col < 10; col++)
 		{
-			if (board[row][col] == 0)
+			if (m_board[row][col] == 0)
 				fullRow = false;
 		}
 		if(fullRow)
@@ -264,16 +263,16 @@ void Game::eliminateRow(int row)
 	for(int r = row; r<19; r++)
 		for(int c = 0; c<10; c++)
 		{
-			board[r][c] = board[r+1][c];
+          m_board[r][c] = m_board[r+1][c];
 		}
 	// Insert empty space at top row
 	for(int c = 0; c < 10; c++)
-		board[19][c] = 0;
+      m_board[19][c] = 0;
 }
 
 //tags a row to be eliminated
 void Game::tagRow(int row)
 {
 	for(int col = 0; col < 10; col++)
-		board[row][col] = 10;
+      m_board[row][col] = 10;
 }

@@ -32,7 +32,7 @@ private:
 	bool isPositionPossible(int x, int y);
 	int checkRows();
 	int score;
-	int board[20][10];
+	int m_board[20][10];
 	int rotation;
 	Piece *piece;
 	//upcoming pieces
